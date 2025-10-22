@@ -2,6 +2,7 @@
 
 from graphics import *
 import random
+import math
 
 
 def getRandomWord():
@@ -34,14 +35,15 @@ def drawMainBoard(win):
 
 def drawPolygon(win):
     """
-        input: none
+        input: window
         output: none
         side effect: draws shape based on user clicks and inputs
     """
     numPoints = int(input("How many points will your polygon be? "))
     color = input("What color do you want your polygon to be? (red, orange, yellow, green, blue, or purple) ")
+    
     pointList = []
-    for i in range(numPoints):
+    for i in range(numPoints): # collecting points for polgon, drawing them as they are clicked
         point = win.getMouse()
         pointList.append(point)
         xVal = point.getX()
@@ -54,24 +56,111 @@ def drawPolygon(win):
     poly.setFill(color)
     poly.draw(win)
 
+def lineFromTwoPoints (point1, point2):
+    x1 = point1.getX()
+    y1 = point1.getY()
+    x2 = point2.getX()
+    y2 = point2.getY()
+
+    p1 = math.pow((x2-x1), 2)
+    p2 = math.pow((y2-y1), 2)
+    
+    line = math.sqrt(p1+p2)
+    return line
+
 def drawCircle(win):
     """
-        input: none
+        input: window
         output: none
         side effect: draws circle based on user clicks and inputs
     """
+
+    color = input("What color do you want your circle to be? (red, orange, yellow, green, blue, or purple) ")
+    
     print("Click where you want the center of your circle to be")
     center = win.getMouse()
+    centerDraw = Point(center.getX(), center.getY())
+    centerDraw.draw(win)
 
     print("Click where you want the radius to extend out to.")
+    point2 = win.getMouse()
+    radius = lineFromTwoPoints(center, point2)
 
-def drawRect():
-    pass
+    circ = Circle(center, radius)
+    circ.setFill(color)
+    circ.draw(win)
 
-def drawLine():
-    pass
-def drawOval():
-    pass
+
+def drawRectangle(win):
+    """
+        input: window
+        output: none
+        side effect: draws circle based on user clicks and inputs
+    """
+    color = input("What color do you want your rectangle to be? (red, orange, yellow, green, blue, or purple) ")
+
+    print("click on the top right point of your rectangle ")
+    point1 = win.getMouse()
+    point1Draw = Point(point1.getX(), point1.getY())
+    point1Draw.draw(win)
+
+    print("click on the bottom left point of your rectangle ")
+    point2 = win.getMouse()
+    point2Draw = Point(point2.getX(), point2.getY())
+    point2Draw.draw(win)
+
+    rect = Rectangle(point1, point2)
+    rect.setFill(color)
+    rect.draw(win)
+
+
+def drawLine(win):
+    """
+        input: window
+        output: none
+        side effect: draws line based on user clicks and inputs
+    """
+    color = input("What color do you want your line to be? (red, orange, yellow, green, blue, or purple) ")
+
+    print("Click the beginning of the line")
+    point1 = win.getMouse()
+    point1Draw = Point(point1.getX(), point1.getY())
+    point1Draw.draw(win)
+
+    print("Click the end of the line")
+    point2 = win.getMouse()
+    point2.draw(win)
+    point2Draw = Point(point2.getX(), point2.getY())
+    point2Draw.draw(win)
+
+    line = Line(point1, point2)
+    line.setFill(color)
+    line.setWidth(3)
+    line.draw(win)
+
+def drawPoint(win):
+    """
+        input: window
+        output: none
+        side effect: draws point based on user clicks and inputs
+    """
+    color = input("What color do you want your point to be? (red, orange, yellow, green, blue, or purple) ")
+
+    size = input("What size do you want your point to be? (1-5) ")
+
+    print("Click where you want your point")
+    pt = win.getMouse()
+    pt = Point(pt.getX(), pt.getY())
+
+    mainPt = Circle(pt, size)
+    mainPt.setFill(color)
+    mainPt.draw(win)
+    
+
+
+
+
+
 
 
 # #def colorWheel():
@@ -163,7 +252,13 @@ def main():
     drawMainBoard(win)
 
     # testing code
+    drawLine(win)
+    drawPoint(win)
     drawPolygon(win)
+    drawRectangle(win)
+    drawCircle(win)
+    drawLine(win)
+    # drawPoint(win)
 
     #print("the random word is:", currentword) ### TEST###
 
