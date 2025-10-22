@@ -14,19 +14,45 @@ def getRandomWord():
     return random.choice(wordlist)
 
 
-def drawMainBoard():
+def drawMainBoard(win):
     """
         Generate user interface
     """
-    pass
+    win.setCoords(-0.25, -0.25, 10.25, 7.25) # give a little buffer, w/o buffer, board is 10x7
+    win.setBackground("white")
 
-def drawShape():
+    # making space for drawing
+    drawingSpace = Rectangle(Point(10,7), Point(3,2))
+    drawingSpace.setOutline("black")
+    drawingSpace.draw(win)
+
+    # making bar with shape options (legend)
+    legendOutline = Rectangle(Point(10,1.75), Point(3,0))
+    legendOutline.setOutline("black")
+    legendOutline.draw(win)
+
+
+def drawPolygon(win):
     """
         input: none
         output: none
         side effect: draws shape based on user clicks and inputs
     """
-    pass
+    numPoints = int(input("How many points will your polygon be? "))
+    color = input("What color do you want your polygon to be? (red, orange, yellow, green, blue, or purple) ")
+    pointList = []
+    for i in range(numPoints):
+        point = win.getMouse()
+        pointList.append(point)
+        xVal = point.getX()
+        yVal = point.getY()
+        pointDraw = Point(xVal, yVal)
+        pointDraw.draw(win)
+
+    poly = Polygon(pointList)
+    poly.setWidth(3)
+    poly.setFill(color)
+    poly.draw(win)
 
 def drawCircle(win):
     """
@@ -71,10 +97,14 @@ def getAndCheckGuess(correct_word):
         return False
 
 
-def takeTurn(Player1, Player2):
+def takeTurn(Player1, Player2, win):
     """
    Manages a single turn for a player, either player 1 or player 2
     """
+    # adding this just while making the board
+    win.getMouse()
+    win.close()
+
     # Start Round 1
     print("--------------------------------")
     print("It is", Player1, "'s turn to draw!")
@@ -112,6 +142,8 @@ def takeTurn(Player1, Player2):
         print("\nYou're out of guesses! The word was:", correct_word)
 
     print("Round Over.")
+    
+    
 
 
 
@@ -127,17 +159,21 @@ def gameOver():
 
 def main():
     # Set up the board
-    drawMainBoard()
+    win = GraphWin("Pictionary", 1000, 700)
+    drawMainBoard(win)
+
+    # testing code
+    drawPolygon(win)
 
     #print("the random word is:", currentword) ### TEST###
 
     # players take turns
 
     # Player 1's Turn
-    takeTurn("Player 1", "Player 2")
+    takeTurn("Player 1", "Player 2", win)
 
     # Player 2's Turn
-    takeTurn("Player 2", "Player 1")
+    takeTurn("Player 2", "Player 1", win)
 
 
     # Game end
