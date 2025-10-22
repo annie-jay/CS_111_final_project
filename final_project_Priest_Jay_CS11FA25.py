@@ -1,5 +1,6 @@
 # Intro CS Final Project
 # authors: Jasper and Annie
+# Part 1
 
 from graphics import *
 import random
