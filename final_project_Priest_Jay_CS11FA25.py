@@ -22,17 +22,43 @@ def drawMainBoard(win):
         Generate user interface
     """
     win.setCoords(-0.25, -0.25, 10.25, 7.25) # give a little buffer, w/o buffer, board is 10x7
-    win.setBackground("white")
+    win.setBackground("thistle")
 
     # making space for drawing
     drawingSpace = Rectangle(Point(10,7), Point(3,2))
     drawingSpace.setOutline("black")
+    drawingSpace.setFill("seashell")
     drawingSpace.draw(win)
 
     # making bar with shape options (legend)
     legendOutline = Rectangle(Point(10,1.75), Point(3,0))
     legendOutline.setOutline("black")
     legendOutline.draw(win)
+
+    line1 = Line(Point(4.4, 0), Point(4.4, 1.75))
+    line1.draw(win)
+    line2 = Line(Point(5.8, 0), Point(5.8, 1.75))
+    line2.draw(win)
+    line3 = Line(Point(7.2, 0), Point(7.2, 1.75))
+    line3.draw(win)
+    line4 = Line(Point(8.6, 0), Point(8.6, 1.75))
+    line4.draw(win)
+
+    pt = Circle(Point(3.7,0.875), 0.06)
+    pt.setFill("black")
+    pt.draw(win)
+    line = Line(Point(4.6, 0.2), Point(5.6, 1.55))
+    line.setWidth(2)
+    line.draw(win)
+    circ = Circle(Point(6.5, 0.875), 0.5)
+    circ.setWidth(2)
+    circ.draw(win)
+    rect = Rectangle(Point(7.4, 0.2), Point(8.4, 1.55))
+    rect.setWidth(2)
+    rect.draw(win)
+    poly = Polygon(Point(9, 0.2), Point(9.6, 0.2), Point(9.8, 0.875), Point(9.6, 1.55), Point(9, 1.55), Point(8.8, 0.875))
+    poly.setWidth(2)
+    poly.draw(win)
 
     # making text entry box
     inputBox = Entry(Point(1.375,0.14), 28)
@@ -201,6 +227,29 @@ def getAndCheckGuess(correct_word):
     else:
         return False
 
+def drawShapes(win):
+    """ 
+    input: window
+    output: none
+    side effect: Calls different draw shape functions based on where user clicks on the board
+    """
+    # message that says click on shape to draw it!
+    pointClicked = win.getMouse()
+    x = pointClicked.getX()
+    y = pointClicked.getY()
+
+    if (x > 3) and (x < 4.4) and (y > 0) and (y < 1.75):
+        drawPoint(win)
+    elif (x > 4.4) and (x < 5.8) and (y > 0) and (y < 1.75):
+        drawLine(win)
+    elif (x > 5.8) and (x < 7.2) and (y > 0) and (y < 1.75):
+        drawCircle(win)
+    elif (x > 7.2) and (x < 8.6) and (y > 0) and (y < 1.75):
+        drawRectangle(win)
+    elif (x > 8.6) and (x < 10) and (y > 0) and (y < 1.75):
+        drawPolygon(win)
+    #else:
+        #message says click on shape to draw
 
 def takeTurn(Player1, Player2, win):
     """
@@ -229,18 +278,19 @@ def takeTurn(Player1, Player2, win):
         guesses_left = 3 - i
         print("\nGuesser has", guesses_left, "guesses left")
 
+        input("Drawer, you have 30 seconds to draw. Press Command when time is up.")
+        drawShapes()
 
-        input("Drawer, you have 30 seconds to draw. Press Enter when time is up.")
-
-
-        input("Okay, time to guess! Guesser, press Enter when you are ready.")
-
-        if getAndCheckGuess(correct_word):
-            print("That's correct! Great work!")
-            correct_guess_made = True
-            break
-        else:
-            print("Not quite! Let's give the drawer more time.")
+        if win.getKey() == "Meta_L":
+            input("Okay, time to guess! Guesser, press Command when you are ready.")
+        
+        if win.getKey() == "Meta_L":
+            if getAndCheckGuess(correct_word):
+                print("That's correct! Great work!")
+                correct_guess_made = True
+                break
+            else:
+                print("Not quite! Let's give the drawer more time.")
 
 
     if correct_guess_made != True:
@@ -266,15 +316,6 @@ def main():
     # Set up the board
     win = GraphWin("Pictionary", 1000, 700)
     drawMainBoard(win)
-
-    # testing code
-    drawLine(win)
-    drawPoint(win)
-    drawPolygon(win)
-    drawRectangle(win)
-    drawCircle(win)
-    drawLine(win)
-    # drawPoint(win)
 
     #print("the random word is:", currentword) ### TEST###
 
