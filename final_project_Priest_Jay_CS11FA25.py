@@ -5,6 +5,7 @@
 from graphics import *
 import random
 import math
+import unittest
 
 
 def getRandomWord():
@@ -13,8 +14,12 @@ def getRandomWord():
         output: correctWord
         side effect: graphs window with word message
     """
-    wordlist = ["dog", "house", "sun", "cat", "boat"]
-    return random.choice(wordlist)
+    #wordlist = ["dog", "house", "sun", "cat", "boat"]
+    #return random.choice(wordlist)
+
+    # hardcodeing one work for testing purposes
+    return "dog"
+
 
 
 def drawMainBoard(win):
@@ -98,7 +103,13 @@ def drawPolygon(win):
     poly.setFill(color)
     poly.draw(win)
 
-def lineFromTwoPoints (point1, point2):
+def distanceBetweenTwoPoints (point1, point2):
+    """
+        input: two points 
+        output: distance 
+        side effect: calculates the distance between two points 
+        This will give us the radius of the circle!
+    """
     x1 = point1.getX()
     y1 = point1.getY()
     x2 = point2.getX()
@@ -126,7 +137,7 @@ def drawCircle(win):
 
     print("Click where you want the radius to extend out to.")
     point2 = win.getMouse()
-    radius = lineFromTwoPoints(center, point2)
+    radius = distanceBetweenTwoPoints(center, point2)
 
     circ = Circle(center, radius)
     circ.setFill(color)
@@ -188,7 +199,7 @@ def drawPoint(win):
     """
     color = input("What color do you want your point to be? (red, orange, yellow, green, blue, or purple) ")
 
-    size = input("What size do you want your point to be? (1-5) ")
+    size = 0.1*(int(input("What size do you want your point to be? (1-5) ")))
 
     print("Click where you want your point")
     pt = win.getMouse()
@@ -199,11 +210,7 @@ def drawPoint(win):
     mainPt.draw(win)
     
 
-
-
-
-
-
+#### This will be a color wheel that we haven't implemented yet ###
 
 # #def colorWheel():
 #     color_image = Image(Point(0, 0), "colorwheel.gif")
@@ -215,7 +222,7 @@ def drawPoint(win):
 def getAndCheckGuess(correct_word):
     """
         input: guess
-        output: none
+        output: ture or false
         side effect: updates guessVaule: ends game if guessValue == true,
             takes away life if guessValue == false
     """
@@ -234,30 +241,30 @@ def drawShapes(win):
     side effect: Calls different draw shape functions based on where user clicks on the board
     """
     # message that says click on shape to draw it!
-    pointClicked = win.getMouse()
-    x = pointClicked.getX()
-    y = pointClicked.getY()
+    for i in range(5): 
+        pointClicked = win.getMouse()
+        x = pointClicked.getX()
+        y = pointClicked.getY()
+        print(f"your point is {x},{y} !")
 
-    if (x > 3) and (x < 4.4) and (y > 0) and (y < 1.75):
-        drawPoint(win)
-    elif (x > 4.4) and (x < 5.8) and (y > 0) and (y < 1.75):
-        drawLine(win)
-    elif (x > 5.8) and (x < 7.2) and (y > 0) and (y < 1.75):
-        drawCircle(win)
-    elif (x > 7.2) and (x < 8.6) and (y > 0) and (y < 1.75):
-        drawRectangle(win)
-    elif (x > 8.6) and (x < 10) and (y > 0) and (y < 1.75):
-        drawPolygon(win)
-    #else:
-        #message says click on shape to draw
+        if (x > 3) and (x < 4.4) and (y > 0) and (y < 1.75):
+            drawPoint(win)
+        elif (x > 4.4) and (x < 5.8) and (y > 0) and (y < 1.75):
+            drawLine(win)
+        elif (x > 5.8) and (x < 7.2) and (y > 0) and (y < 1.75):
+            drawCircle(win)
+        elif (x > 7.2) and (x < 8.6) and (y > 0) and (y < 1.75):
+            drawRectangle(win)
+        elif (x > 8.6) and (x < 10) and (y > 0) and (y < 1.75):
+            drawPolygon(win)
+        continue
+        #else:
+            #message says click on shape to draw
 
 def takeTurn(Player1, Player2, win):
     """
    Manages a single turn for a player, either player 1 or player 2
     """
-    # adding this just while making the board
-    win.getMouse()
-    win.close()
 
     # Start Round 1
     print("--------------------------------")
@@ -278,9 +285,10 @@ def takeTurn(Player1, Player2, win):
         guesses_left = 3 - i
         print("\nGuesser has", guesses_left, "guesses left")
 
-        input("Drawer, you have 30 seconds to draw. Press Command when time is up.")
-        drawShapes()
+        input("Drawer, you have 30 seconds to draw. Press return to start drawing. Press Command when time is up.")
+        drawShapes(win)
 
+    # For some reason this part isn't working right now. 
         if win.getKey() == "Meta_L":
             input("Okay, time to guess! Guesser, press Command when you are ready.")
         
@@ -300,8 +308,6 @@ def takeTurn(Player1, Player2, win):
     
     
 
-
-
 def gameOver():
     """
         input: none
@@ -310,9 +316,26 @@ def gameOver():
     """
     pass
 
+# Unit test code!
+class Test_Happy(unittest.TestCase):
 
+    def test1(self):
+        expected = "dog"
+        actual = getRandomWord()
+        self.assertEqual(expected, actual)
+
+    def test2(self):
+        expected = True
+        actual = getAndCheckGuess("dog")
+        self.assertEqual(expected, actual)
+
+    
 
 def main():
+
+    # unit test
+    # unittest.main(verbosity=2)
+
     # Set up the board
     win = GraphWin("Pictionary", 1000, 700)
     drawMainBoard(win)
@@ -328,11 +351,13 @@ def main():
     takeTurn("Player 2", "Player 1", win)
 
 
-    # Game end
+    # Game end ( this is place holder, function not coded yet)
     print("\nGame Over! Thanks for playing.")
     print("Click on the window to close.")
     win.getMouse()
+
     win.close()
+
 
 
 
