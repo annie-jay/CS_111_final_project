@@ -34,6 +34,20 @@ def drawMainBoard(win):
     legendOutline.setOutline("black")
     legendOutline.draw(win)
 
+    # making text entry box
+    inputBox = Entry(Point(1.375,0.14), 28)
+    inputBox.draw(win)
+
+    # making instruction box
+    intructionsOutline = Rectangle(Point(2.75, 0.5), Point(0,3))
+    intructionsOutline.setOutline("black")
+    intructionsOutline.draw(win)
+
+    # making color wheel box
+    colorBoxOutline = Rectangle(Point(2.75, 3.25), Point(0,7))
+    colorBoxOutline.setOutline("black")
+    colorBoxOutline.draw(win)
+
 
 def drawPolygon(win):
     """
