@@ -70,15 +70,12 @@ def drawMainBoard(win):
     inputBox.draw(win)
 
     # making instruction box
-    intructionsOutline = Rectangle(Point(2.75, 0.5), Point(0,3))
+    intructionsOutline = Rectangle(Point(2.75, 0.5), Point(0,3.5))
     intructionsOutline.setOutline("black")
     intructionsOutline.draw(win)
 
-    # making color wheel box
-    colorBoxOutline = Rectangle(Point(2.75, 3.25), Point(0,7))
-    colorBoxOutline.setOutline("black")
-    colorBoxOutline.draw(win)
-    colorwheel = Image(Point(1.375, 4.5), "colorwheel.gif")
+    # making color wheel 
+    colorwheel = Image(Point(1.375, 5.3), "ezgif-1bfb6ee4d9a88c63.gif")
     colorwheel.draw(win)
 
 
