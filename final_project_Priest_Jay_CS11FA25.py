@@ -78,6 +78,8 @@ def drawMainBoard(win):
     colorBoxOutline = Rectangle(Point(2.75, 3.25), Point(0,7))
     colorBoxOutline.setOutline("black")
     colorBoxOutline.draw(win)
+    colorwheel = Image(Point(1.375, 4.5), "colorwheel.gif")
+    colorwheel.draw(win)
 
 
 def drawPolygon(win):
