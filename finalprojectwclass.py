@@ -23,7 +23,14 @@ def getRandomWord():
 class PictionaryBoard:
     def __init__(self, width, height, name):
         self.win = GraphWin(name, width, height)
-        self.instructions = Text(Point(1.375, 1.75), "Welcome")
+        self.instructions = Text(Point(1.375, 1.75), "Welcome!")
+        self.inputBox = Entry(Point(.92,0.14), 18)
+        self.colorWheel = Image(Point(1.375, 5.3), "ezgif-1bfb6ee4d9a88c63.gif")
+        self.enterButton = Rectangle(Point(1.9, 0), Point(2.75, .25))
+    
+
+
+
 
     def drawBoard(self):
         """
@@ -69,158 +76,184 @@ class PictionaryBoard:
         poly.draw(self.win)
 
         # making text entry box
-        inputBox = Entry(Point(1.375,0.14), 28)
-        inputBox.draw(self.win)
-
+        self.inputBox.draw(self.win)
+        self.inputBox.setText("Enter P1 name")
+        self.enterButton.setFill("seashell")
+        self.enterButton.draw(self.win)
+        enterButtonText = Text(Point(2.15, 0.125), "Enter")
+        enterButtonText.draw(self.win)
+        
         # making instruction box
         intructionsOutline = Rectangle(Point(2.75, 0.5), Point(0,3))
         intructionsOutline.setOutline("black")
         intructionsOutline.draw(self.win)
+        self.instructions.setSize(18)
+        self.instructions.draw(self.win)
 
-        # making color wheel box
-        colorBoxOutline = Rectangle(Point(2.75, 3.25), Point(0,7))
-        colorBoxOutline.setOutline("black")
-        colorBoxOutline.draw(self.win)
+        # drawing color wheel 
+        self.colorWheel.draw(self.win)
 
 
-def drawPolygon(win):
-    """
+    def drawPolygon(self):
+        """
+            input: window
+            output: none
+            side effect: draws shape based on user clicks and inputs
+        """
+        self.instructions.setText("How many points will your polygon be? ")
+        numPoints = int(self.inputBox.getText())
+        self.instructions.setText("Click on the color wheel to select your color!")
+        x,y = self.win.getMouse()
+        r, g, b = self.colorWheel.getPixel(x, y)
+        color = color_rgb(r, g, b)
+            
+        pointList = []
+        for i in range(numPoints): # collecting points for polgon, drawing them as they are clicked
+            point = self.win.getMouse()
+            pointList.append(point)
+            xVal = point.getX()
+            yVal = point.getY()
+            pointDraw = Point(xVal, yVal)
+            pointDraw.draw(self.win)
+
+        poly = Polygon(pointList)
+        poly.setWidth(3)
+        poly.setFill(color)
+        poly.draw(self.win)
+
+    def distanceBetweenTwoPoints (self, point1, point2):
+        """
+            input: two points 
+            output: distance 
+            side effect: calculates the distance between two points 
+            This will give us the radius of the circle!
+        """
+        x1 = point1.getX()
+        y1 = point1.getY()
+        x2 = point2.getX()
+        y2 = point2.getY()
+
+        p1 = math.pow((x2-x1), 2)
+        p2 = math.pow((y2-y1), 2)
+        
+        line = math.sqrt(p1+p2)
+        return line
+
+    def drawCircle(self):
+        """
+            input: window
+            output: none
+            side effect: draws circle based on user clicks and inputs
+        """
+
+        color = input("What color do you want your circle to be? (red, orange, yellow, green, blue, or purple) ")
+        
+        print("Click where you want the center of your circle to be")
+        center = self.win.getMouse()
+        centerDraw = Point(center.getX(), center.getY())
+        centerDraw.draw(self.win)
+
+        print("Click where you want the radius to extend out to.")
+        point2 = self.win.getMouse()
+        radius = distanceBetweenTwoPoints(center, point2)
+
+        circ = Circle(center, radius)
+        circ.setFill(color)
+        circ.draw(self.win)
+
+
+    def drawRectangle(self):
+        """
+            input: window
+            output: none
+            side effect: draws circle based on user clicks and inputs
+        """
+        color = input("What color do you want your rectangle to be? (red, orange, yellow, green, blue, or purple) ")
+
+        print("click on the top right point of your rectangle ")
+        point1 = self.win.getMouse()
+        point1Draw = Point(point1.getX(), point1.getY())
+        point1Draw.draw(self.win)
+
+        print("click on the bottom left point of your rectangle ")
+        point2 = self.win.getMouse()
+        point2Draw = Point(point2.getX(), point2.getY())
+        point2Draw.draw(self.win)
+
+        rect = Rectangle(point1, point2)
+        rect.setFill(color)
+        rect.draw(self.win)
+
+
+    def drawLine(self):
+        """
+            input: window
+            output: none
+            side effect: draws line based on user clicks and inputs
+        """
+        color = input("What color do you want your line to be? (red, orange, yellow, green, blue, or purple) ")
+
+        print("Click the beginning of the line")
+        point1 = self.win.getMouse()
+        point1Draw = Point(point1.getX(), point1.getY())
+        point1Draw.draw(self.win)
+
+        print("Click the end of the line")
+        point2 = self.win.getMouse()
+        point2.draw(self.win)
+        point2Draw = Point(point2.getX(), point2.getY())
+        point2Draw.draw(self.win)
+
+        line = Line(point1, point2)
+        line.setFill(color)
+        line.setWidth(3)
+        line.draw(self.win)
+
+    def drawPoint(self):
+        """
+            input: window
+            output: none
+            side effect: draws point based on user clicks and inputs
+        """
+        color = input("What color do you want your point to be? (red, orange, yellow, green, blue, or purple) ")
+
+        size = 0.1*(int(input("What size do you want your point to be? (1-5) ")))
+
+        print("Click where you want your point")
+        pt = self.win.getMouse()
+        pt = Point(pt.getX(), pt.getY())
+
+        mainPt = Circle(pt, size)
+        mainPt.setFill(color)
+        mainPt.draw(self.win)
+        
+
+    def drawShapes(self):
+        """ 
         input: window
         output: none
-        side effect: draws shape based on user clicks and inputs
-    """
-    numPoints = int(input("How many points will your polygon be? "))
-    color = input("What color do you want your polygon to be? (red, orange, yellow, green, blue, or purple) ")
-    
-    pointList = []
-    for i in range(numPoints): # collecting points for polgon, drawing them as they are clicked
-        point = win.getMouse()
-        pointList.append(point)
-        xVal = point.getX()
-        yVal = point.getY()
-        pointDraw = Point(xVal, yVal)
-        pointDraw.draw(win)
+        side effect: Calls different draw shape functions based on where user clicks on the board
+        """
+        # message that says click on shape to draw it!
+        for i in range(5): 
+            pointClicked = self.win.getMouse()
+            x = pointClicked.getX()
+            y = pointClicked.getY()
+            print(f"your point is {x},{y} !")
 
-    poly = Polygon(pointList)
-    poly.setWidth(3)
-    poly.setFill(color)
-    poly.draw(win)
-
-def distanceBetweenTwoPoints (point1, point2):
-    """
-        input: two points 
-        output: distance 
-        side effect: calculates the distance between two points 
-        This will give us the radius of the circle!
-    """
-    x1 = point1.getX()
-    y1 = point1.getY()
-    x2 = point2.getX()
-    y2 = point2.getY()
-
-    p1 = math.pow((x2-x1), 2)
-    p2 = math.pow((y2-y1), 2)
-    
-    line = math.sqrt(p1+p2)
-    return line
-
-def drawCircle(win):
-    """
-        input: window
-        output: none
-        side effect: draws circle based on user clicks and inputs
-    """
-
-    color = input("What color do you want your circle to be? (red, orange, yellow, green, blue, or purple) ")
-    
-    print("Click where you want the center of your circle to be")
-    center = win.getMouse()
-    centerDraw = Point(center.getX(), center.getY())
-    centerDraw.draw(win)
-
-    print("Click where you want the radius to extend out to.")
-    point2 = win.getMouse()
-    radius = distanceBetweenTwoPoints(center, point2)
-
-    circ = Circle(center, radius)
-    circ.setFill(color)
-    circ.draw(win)
-
-
-def drawRectangle(win):
-    """
-        input: window
-        output: none
-        side effect: draws circle based on user clicks and inputs
-    """
-    color = input("What color do you want your rectangle to be? (red, orange, yellow, green, blue, or purple) ")
-
-    print("click on the top right point of your rectangle ")
-    point1 = win.getMouse()
-    point1Draw = Point(point1.getX(), point1.getY())
-    point1Draw.draw(win)
-
-    print("click on the bottom left point of your rectangle ")
-    point2 = win.getMouse()
-    point2Draw = Point(point2.getX(), point2.getY())
-    point2Draw.draw(win)
-
-    rect = Rectangle(point1, point2)
-    rect.setFill(color)
-    rect.draw(win)
-
-
-def drawLine(win):
-    """
-        input: window
-        output: none
-        side effect: draws line based on user clicks and inputs
-    """
-    color = input("What color do you want your line to be? (red, orange, yellow, green, blue, or purple) ")
-
-    print("Click the beginning of the line")
-    point1 = win.getMouse()
-    point1Draw = Point(point1.getX(), point1.getY())
-    point1Draw.draw(win)
-
-    print("Click the end of the line")
-    point2 = win.getMouse()
-    point2.draw(win)
-    point2Draw = Point(point2.getX(), point2.getY())
-    point2Draw.draw(win)
-
-    line = Line(point1, point2)
-    line.setFill(color)
-    line.setWidth(3)
-    line.draw(win)
-
-def drawPoint(win):
-    """
-        input: window
-        output: none
-        side effect: draws point based on user clicks and inputs
-    """
-    color = input("What color do you want your point to be? (red, orange, yellow, green, blue, or purple) ")
-
-    size = 0.1*(int(input("What size do you want your point to be? (1-5) ")))
-
-    print("Click where you want your point")
-    pt = win.getMouse()
-    pt = Point(pt.getX(), pt.getY())
-
-    mainPt = Circle(pt, size)
-    mainPt.setFill(color)
-    mainPt.draw(win)
-    
-
-#### This will be a color wheel that we haven't implemented yet ###
-
-# #def colorWheel():
-#     color_image = Image(Point(0, 0), "colorwheel.gif")
-
-#     color_image.draw(win)
-#     return color_image
-
+            if (x > 3) and (x < 4.4) and (y > 0) and (y < 1.75):
+                self.drawPoint(self.win)
+            elif (x > 4.4) and (x < 5.8) and (y > 0) and (y < 1.75):
+                self.drawLine(self.win)
+            elif (x > 5.8) and (x < 7.2) and (y > 0) and (y < 1.75):
+                self.drawCircle(self.win)
+            elif (x > 7.2) and (x < 8.6) and (y > 0) and (y < 1.75):
+                self.drawRectangle(self.win)
+            elif (x > 8.6) and (x < 10) and (y > 0) and (y < 1.75):
+                self.drawPolygon(self.win)
+            continue
+            #else:
+                #message says click on shape to draw
 
 def getAndCheckGuess(correct_word):
     """
@@ -237,32 +270,7 @@ def getAndCheckGuess(correct_word):
     else:
         return False
 
-def drawShapes(win):
-    """ 
-    input: window
-    output: none
-    side effect: Calls different draw shape functions based on where user clicks on the board
-    """
-    # message that says click on shape to draw it!
-    for i in range(5): 
-        pointClicked = win.getMouse()
-        x = pointClicked.getX()
-        y = pointClicked.getY()
-        print(f"your point is {x},{y} !")
 
-        if (x > 3) and (x < 4.4) and (y > 0) and (y < 1.75):
-            drawPoint(win)
-        elif (x > 4.4) and (x < 5.8) and (y > 0) and (y < 1.75):
-            drawLine(win)
-        elif (x > 5.8) and (x < 7.2) and (y > 0) and (y < 1.75):
-            drawCircle(win)
-        elif (x > 7.2) and (x < 8.6) and (y > 0) and (y < 1.75):
-            drawRectangle(win)
-        elif (x > 8.6) and (x < 10) and (y > 0) and (y < 1.75):
-            drawPolygon(win)
-        continue
-        #else:
-            #message says click on shape to draw
 
 def takeTurn(Player1, Player2, win):
     """
@@ -343,6 +351,9 @@ def main():
     interface = PictionaryBoard(1000, 700, "Pictionary")
     interface.drawBoard()
 
+    interface.win.getMouse()
+
+    interface.win.close()
     #print("the random word is:", currentword) ### TEST###
 
     # players take turns
@@ -357,9 +368,7 @@ def main():
     # # Game end ( this is place holder, function not coded yet)
     # print("\nGame Over! Thanks for playing.")
     # print("Click on the window to close.")
-    # win.getMouse()
 
-    # win.close()
 
 
 

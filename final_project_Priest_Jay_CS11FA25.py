@@ -22,7 +22,7 @@ def getRandomWord():
 
 
 
-def drawMainBoard(win):
+def drawMainBoard(win, instructions):
     """
         Generate user interface
     """
@@ -65,14 +65,12 @@ def drawMainBoard(win):
     poly.setWidth(2)
     poly.draw(win)
 
-    # making text entry box
-    inputBox = Entry(Point(1.375,0.14), 28)
-    inputBox.draw(win)
-
     # making instruction box
     intructionsOutline = Rectangle(Point(2.75, 0.5), Point(0,3.5))
     intructionsOutline.setOutline("black")
     intructionsOutline.draw(win)
+    instructions.setSize(18)
+    instructions.draw(win)
 
     # making color wheel 
     colorwheel = Image(Point(1.375, 5.3), "ezgif-1bfb6ee4d9a88c63.gif")
@@ -337,7 +335,12 @@ def main():
 
     # Set up the board
     win = GraphWin("Pictionary", 1000, 700)
-    drawMainBoard(win)
+    instructions = Text(Point(1.375, 1.75), "Welcome!")
+    drawMainBoard(win, instructions)
+
+    # making text entry box
+    inputBox = Entry(Point(1.375,0.14), 28)
+    inputBox.draw(win)
 
     #print("the random word is:", currentword) ### TEST###
 
