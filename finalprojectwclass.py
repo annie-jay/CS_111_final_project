@@ -6,7 +6,7 @@ from graphics import *
 import random
 import math
 import unittest
-
+import time 
 
 def getRandomWord():
     """
@@ -28,9 +28,6 @@ class PictionaryBoard:
         self.colorWheel = Image(Point(1.375, 5.3), "ezgif-1bfb6ee4d9a88c63.gif")
         self.enterButton = Rectangle(Point(1.9, 0), Point(2.75, .25))
     
-
-
-
 
     def drawBoard(self):
         """
@@ -155,7 +152,7 @@ class PictionaryBoard:
 
         print("Click where you want the radius to extend out to.")
         point2 = self.win.getMouse()
-        radius = distanceBetweenTwoPoints(center, point2)
+        radius = self.distanceBetweenTwoPoints(center, point2)
 
         circ = Circle(center, radius)
         circ.setFill(color)
@@ -235,27 +232,27 @@ class PictionaryBoard:
         side effect: Calls different draw shape functions based on where user clicks on the board
         """
         # message that says click on shape to draw it!
-        for i in range(5): 
+        for i in range(1): 
             pointClicked = self.win.getMouse()
             x = pointClicked.getX()
             y = pointClicked.getY()
             print(f"your point is {x},{y} !")
 
             if (x > 3) and (x < 4.4) and (y > 0) and (y < 1.75):
-                self.drawPoint(self.win)
+                self.drawPoint()
             elif (x > 4.4) and (x < 5.8) and (y > 0) and (y < 1.75):
-                self.drawLine(self.win)
+                self.drawLine()
             elif (x > 5.8) and (x < 7.2) and (y > 0) and (y < 1.75):
-                self.drawCircle(self.win)
+                self.drawCircle()
             elif (x > 7.2) and (x < 8.6) and (y > 0) and (y < 1.75):
-                self.drawRectangle(self.win)
+                self.drawRectangle()
             elif (x > 8.6) and (x < 10) and (y > 0) and (y < 1.75):
-                self.drawPolygon(self.win)
+                self.drawPolygon()
             continue
             #else:
                 #message says click on shape to draw
 
-def getAndCheckGuess(correct_word):
+def getAndCheckGuess(correct_word, interface):
     """
         input: guess
         output: ture or false
@@ -263,7 +260,7 @@ def getAndCheckGuess(correct_word):
             takes away life if guessValue == false
     """
 
-    guess = input("Enter your guess. Please type in lowercase: ")
+    guess = interface.inputBox.getText()
 
     if guess == correct_word:
         return True
@@ -272,7 +269,7 @@ def getAndCheckGuess(correct_word):
 
 
 
-def takeTurn(Player1, Player2, win):
+def takeTurn(Player1, Player2, interface):
     """
    Manages a single turn for a player, either player 1 or player 2
     """
@@ -296,20 +293,36 @@ def takeTurn(Player1, Player2, win):
         guesses_left = 3 - i
         print("\nGuesser has", guesses_left, "guesses left")
 
-        input("Drawer, you have 30 seconds to draw. Press return to start drawing. Press Command when time is up.")
-        drawShapes(win)
+        input("Drawer, you have 30 seconds to draw. Press enter key to start drawing. Press enter button on interface when time is up.")
+        interface.drawShapes()
 
-    # For some reason this part isn't working right now. 
-        if win.getKey() == "Meta_L":
-            input("Okay, time to guess! Guesser, press Command when you are ready.")
-        
-        if win.getKey() == "Meta_L":
-            if getAndCheckGuess(correct_word):
+        pointClicked = interface.win.getMouse() 
+        x = pointClicked.getX()
+        y = pointClicked.getY()
+        if (x > 1.9) and (x < 2.75) and (y > 0) and (y < .25):
+            if getAndCheckGuess(correct_word, interface):
                 print("That's correct! Great work!")
                 correct_guess_made = True
                 break
             else:
                 print("Not quite! Let's give the drawer more time.")
+
+
+
+        # enterButtonText = Text(Point(2.15, 0.125), "Enter")
+
+        #     elif (x > 8.6) and (x < 10) and (y > 0) and (y < 1.75):
+        #         self.drawPolygon(self.win)
+        # if win.getKey() == "Return":
+        #     input("Okay, time to guess! Guesser, press Command when you are ready.")
+        
+        # if win.getKey() == "Return":
+        #     if getAndCheckGuess(correct_word):
+        #         print("That's correct! Great work!")
+        #         correct_guess_made = True
+        #         break
+        #     else:
+        #         print("Not quite! Let's give the drawer more time.")
 
 
     if correct_guess_made != True:
@@ -351,20 +364,19 @@ def main():
     interface = PictionaryBoard(1000, 700, "Pictionary")
     interface.drawBoard()
 
-    interface.win.getMouse()
 
-    interface.win.close()
     #print("the random word is:", currentword) ### TEST###
 
     # players take turns
 
     # Player 1's Turn
-    # takeTurn("Player 1", "Player 2", win)
+    takeTurn("Player 1", "Player 2", interface)
 
     # # Player 2's Turn
-    # # takeTurn("Player 2", "Player 1", win)
+    takeTurn("Player 2", "Player 1", interface)
 
-
+    interface.win.getMouse()
+    interface.win.close()
     # # Game end ( this is place holder, function not coded yet)
     # print("\nGame Over! Thanks for playing.")
     # print("Click on the window to close.")
