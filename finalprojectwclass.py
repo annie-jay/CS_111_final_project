@@ -106,15 +106,29 @@ class PictionaryBoard:
         """
         self.instructions.setText("How many points \n will your polygon be? \n Press enter to confirm")
         while isEnterClicked(self.win) == False: 
-            self.instructions.setText("You didn't click enter")
-        numPoints = int(self.inputBox.getText())
-        self.instructions.setText("Click on the color wheel to select your color!")
-        pointClicked = self.win.getMouse() 
-        x = pointClicked.getX()
-        y = pointClicked.getY()
-        r, g, b = self.colorWheel.getPixel(x, y)
-        color = color_rgb(r, g, b)
-            
+            self.instructions.setText("You didn't click \n enter. Please input \nnumber of points \n and click enter.")
+        try: 
+            numPoints = int(self.inputBox.getText())
+            if numPoints < 3:
+                self.instructions.setText("Please enter an \n integer greater than 3. \n Then click enter.")
+                self.inputBox.setText("")
+                if isEnterClicked(self.win): 
+                    numPoints = int(self.inputBox.getText())
+        except:
+            self.instructions.setText("Please enter an \n integer greater than 3.")
+            self.inputBox.setText("")
+        self.inputBox.setText("")
+
+        # self.instructions.setText("Click on the color \n wheel to select your \n color!")
+        # pointClicked = self.win.getMouse() 
+        # x = pointClicked.getX()
+        # y = pointClicked.getY()
+        # r, g, b = self.colorWheel.getPixel(x, y)
+        # #color = color_rgb(r, g, b)
+
+        color = "black"
+        self.instructions.setText("Hard coded to black")
+
         pointList = []
         for i in range(numPoints): # collecting points for polgon, drawing them as they are clicked
             point = self.win.getMouse()
@@ -263,7 +277,7 @@ class PictionaryBoard:
             #else:
                 #message says click on shape to draw
 
-def getAndCheckGuess(correct_word, interface):
+def getAndCheckGuess(correctWord, interface):
     """
         input: guess
         output: ture or false
@@ -273,10 +287,43 @@ def getAndCheckGuess(correct_word, interface):
 
     guess = interface.inputBox.getText()
 
-    if guess == correct_word:
+    if guess == correctWord:
         return True
     else:
         return False
+
+class Player: 
+    def __init__ (self, name, role):
+        self.name = name
+        self.role = role 
+        self.guesses = 3
+        self.correct_guess_made = False
+
+    def draw (self, interface):
+        interface.instructions.setText(f"{self.name} draw one shape!\n Click on a shape \n in the menu and \n follow the instructions.")
+        interface.drawShapes()
+
+
+    def guess(self, interface, correctWord):
+        interface.instructions.setText(f"{self.name} type your \n guess and then click \n the enter button")
+        while isEnterClicked(interface.win) == False:
+            interface.instructions.setText("Please click enter")
+        interface.inputBox.setText("")
+        if getAndCheckGuess(correctWord, interface):
+            interface.instructions.setText("That is correct! \n Great work.")
+            self.correct_guess_made = True
+        else:
+            interface.instructions.setText("Not quite. \n Let's give the guesser \n more time. Press \n enter to continue")
+            self.guesses = self.guesses - 1 
+            if isEnterClicked(interface.win):
+                interface.instructions.setText("")
+
+
+    def returnGuesses(self):
+        return self.guesses
+    
+    def returnGuessState(self):
+        return self.correct_guess_made 
 
 
 
@@ -290,49 +337,55 @@ def takeTurn(Player1, Player2, interface):
     print("It is", Player1, "'s turn to draw!")
     input("Guesser, please look away. Drawer, press Enter when you are ready.")
 
-    correct_word = getRandomWord()
-    print("The word to draw is:", correct_word)
+    correctWord = getRandomWord()
+    print("The word to draw is:", correctWord)
     print("The guesser will have 3 lives.")
     print("--------------------------------")
 
 
     # Draw and guess loop
 
-    correct_guess_made = False
+    # correct_guess_made = False
 
-    for i in range(3):
-        guesses_left = 3 - i
-        print("\nGuesser has", guesses_left, "guesses left")
+    # for i in range(3):
+    #     guesses_left = 3 - i
+    #     print("\nGuesser has", guesses_left, "guesses left")
 
-        input("Drawer, you have 30 seconds to draw. Press enter key to start drawing. Press enter button on interface when time is up.")
-        interface.drawShapes()
+    #     input("Drawer, you have 30 seconds to draw. Press enter key to start drawing. Press enter button on interface when time is up.")
+    #     interface.drawShapes()
 
-        pointClicked = interface.win.getMouse() 
-        x = pointClicked.getX()
-        y = pointClicked.getY()
-        if (x > 1.9) and (x < 2.75) and (y > 0) and (y < .25):
-            if getAndCheckGuess(correct_word, interface):
-                print("That's correct! Great work!")
-                correct_guess_made = True
-                break
-            else:
-                print("Not quite! Let's give the drawer more time.")
+    #     pointClicked = interface.win.getMouse() 
+    #     x = pointClicked.getX()
+    #     y = pointClicked.getY()
+    #     if (x > 1.9) and (x < 2.75) and (y > 0) and (y < .25):
+    #         if getAndCheckGuess(correctWord, interface):
+    #             print("That's correct! Great work!")
+    #             correct_guess_made = True
+    #             break
+    #         else:
+    #             print("Not quite! Let's give the drawer more time.")
 
 
-    if correct_guess_made != True:
-        print("\nYou're out of guesses! The word was:", correct_word)
+    # if correct_guess_made != True:
+    #     print("\nYou're out of guesses! The word was:", correctWord)
 
-    print("Round Over.")
+    # print("Round Over.")
     
     
 
-def gameOver():
+def isRoundOver(guesser):
     """
         input: none
         output: none
-        side effect: if lives == 0, or guessValue == true, ends game
+        side effect: if guesses == 0, or guessValue == true, ends game
     """
-    pass
+    if guesser.returnGuesses() == 0:
+        return True 
+    elif guesser.returnGuessState():
+        return True 
+    else:
+        return False
+    
 
 # Unit test code!
 class Test_Happy(unittest.TestCase):
@@ -354,9 +407,59 @@ def main():
     # unit test
     # unittest.main(verbosity=2)
 
-    # Set up the board
+    # Set up the board for round 1
     interface = PictionaryBoard(1000, 700, "Pictionary")
     interface.drawBoard()
+
+    interface.instructions.setText("Player 1, you are \n the guesser. Please \n enter your name.\n Then click enter button.")
+    if isEnterClicked(interface.win):
+        name1 = interface.inputBox.getText()
+        interface.inputBox.setText("")
+
+    interface.instructions.setText("Player 2, you are \n the drawer. Please \n enter your name. \n Then click enter button.")
+    if isEnterClicked(interface.win):
+        name2 = interface.inputBox.getText()
+        interface.inputBox.setText("")
+
+
+    player1 = Player(name1, "guesser")
+    
+    player2 = Player(name2, "drawer")
+
+    correctWord = getRandomWord()
+
+    while isRoundOver(player1) == False: 
+        player2.draw(interface)
+        player1.guess(interface, correctWord)
+
+
+    if player1.returnGuessState():
+        interface.instructions.setText(f"You win round 1! \n You will now switch roles.\n It is {name1}'s turn to draw. \n Click anywhere to start the next round")
+    else: 
+        interface.instructions.setText(f"You lose round 1! \n You will now switch roles.\n It is {name1}'s turn to draw.\n Click anywhere to start the next round")
+
+    interface.win.getMouse()
+    interface.win.close()
+    
+    # this is round 2
+    interface = PictionaryBoard(1000, 700, "Pictionary")
+    interface.drawBoard()
+
+    interface.instructions.setText(f"{name2}, you are \n the guesser. {name1}, you are \n the drawer.")
+
+    correctWord = getRandomWord()
+
+    while isRoundOver(player2) == False: 
+        player1.draw(interface)
+        player2.guess(interface, correctWord)
+
+    if player2.returnGuessState():
+        interface.instructions.setText(f"You win round 2! \n Thanks for playing.\n Click anywhere to exit")
+    else: 
+        interface.instructions.setText(f"You lose round 2! \n Thanks for playing.\n Click anywhere to exit")
+
+    interface.win.getMouse()
+    interface.win.close()
 
 
     #print("the random word is:", currentword) ### TEST###
@@ -369,8 +472,7 @@ def main():
     # # Player 2's Turn
     takeTurn("Player 2", "Player 1", interface)
 
-    interface.win.getMouse()
-    interface.win.close()
+
     # # Game end ( this is place holder, function not coded yet)
     # print("\nGame Over! Thanks for playing.")
     # print("Click on the window to close.")
