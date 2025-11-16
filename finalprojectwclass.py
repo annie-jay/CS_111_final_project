@@ -20,12 +20,20 @@ def getRandomWord():
     # hardcodeing one work for testing purposes
     return "dog"
 
+def isEnterClicked(win): 
+        pointClicked = win.getMouse() 
+        x = pointClicked.getX()
+        y = pointClicked.getY()
+        if (x > 1.9) and (x < 2.75) and (y > 0) and (y < .25):
+            return True
+        return False
+
 class PictionaryBoard:
     def __init__(self, width, height, name):
         self.win = GraphWin(name, width, height)
         self.instructions = Text(Point(1.375, 1.75), "Welcome!")
         self.inputBox = Entry(Point(.92,0.14), 18)
-        self.colorWheel = Image(Point(1.375, 5.3), "ezgif-1bfb6ee4d9a88c63.gif")
+        self.colorWheel = Image(Point(1.375, 5.3), "colorwheel.gif")
         self.enterButton = Rectangle(Point(1.9, 0), Point(2.75, .25))
     
 
@@ -74,7 +82,6 @@ class PictionaryBoard:
 
         # making text entry box
         self.inputBox.draw(self.win)
-        self.inputBox.setText("Enter P1 name")
         self.enterButton.setFill("seashell")
         self.enterButton.draw(self.win)
         enterButtonText = Text(Point(2.15, 0.125), "Enter")
@@ -97,10 +104,14 @@ class PictionaryBoard:
             output: none
             side effect: draws shape based on user clicks and inputs
         """
-        self.instructions.setText("How many points will your polygon be? ")
+        self.instructions.setText("How many points \n will your polygon be? \n Press enter to confirm")
+        while isEnterClicked(self.win) == False: 
+            self.instructions.setText("You didn't click enter")
         numPoints = int(self.inputBox.getText())
         self.instructions.setText("Click on the color wheel to select your color!")
-        x,y = self.win.getMouse()
+        pointClicked = self.win.getMouse() 
+        x = pointClicked.getX()
+        y = pointClicked.getY()
         r, g, b = self.colorWheel.getPixel(x, y)
         color = color_rgb(r, g, b)
             
@@ -306,23 +317,6 @@ def takeTurn(Player1, Player2, interface):
                 break
             else:
                 print("Not quite! Let's give the drawer more time.")
-
-
-
-        # enterButtonText = Text(Point(2.15, 0.125), "Enter")
-
-        #     elif (x > 8.6) and (x < 10) and (y > 0) and (y < 1.75):
-        #         self.drawPolygon(self.win)
-        # if win.getKey() == "Return":
-        #     input("Okay, time to guess! Guesser, press Command when you are ready.")
-        
-        # if win.getKey() == "Return":
-        #     if getAndCheckGuess(correct_word):
-        #         print("That's correct! Great work!")
-        #         correct_guess_made = True
-        #         break
-        #     else:
-        #         print("Not quite! Let's give the drawer more time.")
 
 
     if correct_guess_made != True:
