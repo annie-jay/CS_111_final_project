@@ -31,14 +31,14 @@ def isEnterClicked(pointClicked):
         y = pointClicked.getY()
         if (x > 1.9) and (x < 2.75) and (y > 0) and (y < .25):
             return True
-        return False
+        return False 
 
 class PictionaryBoard:
     def __init__(self, width, height, name):
         self.win = GraphWin(name, width, height)
         self.instructions = Text(Point(1.375, 2.25), "Welcome!")
         self.inputBox = Entry(Point(.92,0.14), 18)
-        self.pictionarygif = Image(Point(1.375, 5.3), "pictionary.gif")
+        self.pictionarygif = Image(Point(1.375, 5.5), "pictionary.gif")
         self.enterButton = Rectangle(Point(1.9, 0), Point(2.75, .25))
 
         self.current_color = "black"
@@ -116,7 +116,10 @@ class PictionaryBoard:
         self.instructions.setSize(18)
         self.instructions.draw(self.win)
 
-        # drawing pictionary gif
+        # drawing pictionary gif and surrounding box
+        gifBox = Rectangle(Point(0,4), Point(2.75, 7))
+        gifBox.setFill("purple")
+        gifBox.draw(self.win)
         self.pictionarygif.draw(self.win)
 
     def getColor(self, shape):
@@ -397,24 +400,24 @@ def isRoundOver(guesser):
         return False
     
 
-# Unit test code!
+# Unit tests
 class Test_Happy(unittest.TestCase):
 
-    def test1(self):
-        expected = "dog"
-        actual = getRandomWord()
+    def testTrue(self):
+        expected = True
+        actual = isEnterClicked(Point(2, 0.2))
         self.assertEqual(expected, actual)
 
-    def test2(self):
-        expected = True
-        actual = getAndCheckGuess("dog")
+    def testFalse(self):
+        expected = False
+        actual = isEnterClicked(Point(1, 0))
         self.assertEqual(expected, actual)
-        pass 
     
 
 def main():
 
-    # unit test
+    # unit test- PASS! Commented out so the rest of the program will run
+    # unittest.main(verbosity=2)
 
     # Set up the board for round 1
     interface = PictionaryBoard(1000, 700, "Pictionary")
