@@ -382,20 +382,6 @@ class Player:
     def returnGuessState(self):
         return self.correct_guess_made 
 
-
-# def takeTurn(Player1, Player2, interface):
-#     """
-#    Manages a single turn for a player, either player 1 or player 2
-#     """
-#     # Start Round 1
-#     print("--------------------------------")
-#     print("It is", Player1, "'s turn to draw!")
-#     input("Guesser, please look away. Drawer, press Enter when you are ready.")
-
-#     correctWord = getRandomWord()
-#     print("The word to draw is:", correctWord)
-#     print("The guesser will have 3 lives.")
-#     print("--------------------------------")
     
 def isRoundOver(guesser):
     """
@@ -497,7 +483,6 @@ def main():
     interface.instructions.setText(f"{name2}, you are \n the guesser. {name1}, you are \n the drawer.")
 
     # Setting new correct word for round 2, and telling user
-
     correctWord = getRandomWord("pictionaryWords.csv")
     
     interface.instructions.setText(f"{player2.name}, look away! \n {player1.name} click enter \n when you are ready \n to reveal the word.")
@@ -528,22 +513,6 @@ def main():
     interface.win.getMouse()
     interface.win.close()
 
-
-    #print("the random word is:", currentword) ### TEST###
-
-    # --- EDIT: ---
-    # The 'takeTurn' function is not used by this main()
-    # so I'm commenting out the calls.
-    # players take turns 
-    # Player 1's Turn
-    # takeTurn("Player 1", "Player 2", interface)
-    # # Player 2's Turn
-    # takeTurn("Player 2", "Player 1", interface)
-
-
-    # # Game end ( this is place holder, function not coded yet)
-    # print("\nGame Over! Thanks for playing.")
-    # print("Click on the window to close.")
 
 if __name__ == "__main__":
     main()
