@@ -8,14 +8,18 @@ import math
 import unittest
 import time 
 
-def getRandomWord():
+def getRandomWord(file):
     """
         input: word list
         output: correctWord
         side effect: graphs window with word message
     """
-    wordlist = ["dog", "house", "sun", "cat", "boat"]
-    return random.choice(wordlist)
+    file = open(file)
+    wordList = []
+    for line in file:
+        word = line.strip()
+        wordList.append(word)
+    return random.choice(wordList)
 
 def isEnterClicked(pointClicked): 
         """
@@ -115,13 +119,33 @@ class PictionaryBoard:
         # drawing color wheel 
         self.colorWheel.draw(self.win)
 
-
-    def drawPolygon(self, color):
+    def getColor(self, shape):
         """
-            input: window, color
+         input: none
+         output: color
+         side effect: color window pops up, user clicks on chosen color
+        """
+        colorWin = GraphWin("Color Picker", 300, 300)
+        colorWheel = Image(Point(150, 150), "colorwheel.gif")
+        colorWheel.draw(colorWin)
+
+        self.instructions.setText(f"Please click on\ncolor wheel to\nselect the color\n for your\n{shape}")
+        point = colorWin.getMouse()
+        x = int(point.getX())
+        y = int(point.getY())
+        r, g, b = colorWheel.getPixel(x, y)
+        color = color_rgb(r, g, b)
+        colorWin.close()
+        return color
+
+    def drawPolygon(self):
+        """
+            input: window
             output: none
             side effect: draws shape based on user clicks and inputs
         """
+        color = self.getColor("polygon")
+
         self.instructions.setText("How many points \n will your polygon be? \n Press enter to confirm")
         
         pointClicked = self.win.getMouse()
@@ -150,8 +174,7 @@ class PictionaryBoard:
             numPoints = int(self.inputBox.getText())
         self.inputBox.setText("")
 
-        self.instructions.setText(f"Color is {color}. \n Click {numPoints} times.")
-
+        self.instructions.setText(f"Click {numPoints} times.")
         pointList = []
         for i in range(numPoints): # collecting points for polgon, drawing them as they are clicked
             point = self.win.getMouse()
@@ -184,13 +207,14 @@ class PictionaryBoard:
         line = math.sqrt(p1+p2)
         return line
 
-    def drawCircle(self, color):
+    def drawCircle(self):
         """
             input: window, color
             output: none
             side effect: draws circle based on user clicks and inputs
         """
-        
+        color = self.getColor("circle")
+
         self.instructions.setText("Click where you want \n the center of your \n circle to be")
         center = self.win.getMouse()
         centerDraw = Point(center.getX(), center.getY())
@@ -204,12 +228,13 @@ class PictionaryBoard:
         circ.setFill(color)
         circ.draw(self.win)
 
-    def drawRectangle(self, color):
+    def drawRectangle(self):
         """
             input: window, color
             output: none
             side effect: draws circle based on user clicks and inputs
         """
+        color = self.getColor("rectangle")
         self.instructions.setText("Click on the top \n right point of \n your rectangle ")
         point1 = self.win.getMouse()
         point1Draw = Point(point1.getX(), point1.getY())
@@ -225,20 +250,24 @@ class PictionaryBoard:
         rect.draw(self.win)
 
 
-    def drawLine(self, color):
+    def drawLine(self):
         """
             input: window, color
             output: none
             side effect: draws line based on user clicks and inputs
         """
+        color = self.getColor("line")
+
         self.instructions.setText("Click the beginning \n of the line")
         point1 = self.win.getMouse()
         point1Draw = Point(point1.getX(), point1.getY())
+        point1Draw.setFill(color)
         point1Draw.draw(self.win)
 
         self.instructions.setText("Click the end \n of the line")
         point2 = self.win.getMouse()
         point2Draw = Point(point2.getX(), point2.getY())
+        point1Draw.setFill(color)
         point2Draw.draw(self.win)
 
         line = Line(point1, point2)
@@ -246,19 +275,19 @@ class PictionaryBoard:
         line.setWidth(3)
         line.draw(self.win)
 
-    def drawPoint(self, color):
+    def drawPoint(self):
         """
             input: window, color
             output: none
             side effect: draws point based on user clicks and inputs
         """
-        size = 0.1
+        color = self.getColor("point")
 
         self.instructions.setText("Click where you \n want your point")
         pt = self.win.getMouse()
         pt = Point(pt.getX(), pt.getY())
 
-        mainPt = Circle(pt, size)
+        mainPt = Circle(pt, 0.1)
         mainPt.setFill(color)
         mainPt.setOutline(color)
         mainPt.draw(self.win)
@@ -276,26 +305,21 @@ class PictionaryBoard:
             x = pointClicked.getX()
             y = pointClicked.getY()
 
-            # if 
-            #     r, g, b = self.colorWheel.getPixel(int(x), int(y))
-            #     self.current_color = color_rgb(r, g, b)
-            #     self.instructions.setText(f"Color set to \n {self.current_color}!")
-            #     continue
 
             if (x > 3) and (x < 4.4) and (y > 0) and (y < 1.75):
-                self.drawPoint(self.current_color)
+                self.drawPoint()
                 shapes_drawn = shapes_drawn + 1
             elif (x > 4.4) and (x < 5.8) and (y > 0) and (y < 1.75):
-                self.drawLine(self.current_color)
+                self.drawLine()
                 shapes_drawn = shapes_drawn + 1
             elif (x > 5.8) and (x < 7.2) and (y > 0) and (y < 1.75):
-                self.drawCircle(self.current_color)
+                self.drawCircle()
                 shapes_drawn = shapes_drawn + 1
             elif (x > 7.2) and (x < 8.6) and (y > 0) and (y < 1.75):
-                self.drawRectangle(self.current_color)
+                self.drawRectangle()
                 shapes_drawn = shapes_drawn + 1
             elif (x > 8.6) and (x < 10) and (y > 0) and (y < 1.75):
-                self.drawPolygon(self.current_color)
+                self.drawPolygon()
                 shapes_drawn = shapes_drawn + 1
             else:
                 if not (x > 3 and x < 10 and y > 2 and y < 7):
@@ -437,7 +461,7 @@ def main():
     player2 = Player(name2, "drawer")
 
     # getting correct word for round 1, and showing it to drawer
-    correctWord = getRandomWord()
+    correctWord = getRandomWord("pictionaryWords.csv")
     
     interface.instructions.setText(f"{player1.name}, look away! \n {player2.name} click enter \n when you are ready \n to reveal the word.")
     
@@ -474,7 +498,7 @@ def main():
 
     # Setting new correct word for round 2, and telling user
 
-    correctWord = getRandomWord()
+    correctWord = getRandomWord("pictionaryWords.csv")
     
     interface.instructions.setText(f"{player2.name}, look away! \n {player1.name} click enter \n when you are ready \n to reveal the word.")
     
