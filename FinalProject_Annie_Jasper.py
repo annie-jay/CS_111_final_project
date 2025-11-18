@@ -6,7 +6,6 @@ from graphics import *
 import random
 import math
 import unittest
-import time 
 
 def getRandomWord(file):
     """
@@ -32,7 +31,7 @@ def isEnterClicked(pointClicked):
         if (x > 1.9) and (x < 2.75) and (y > 0) and (y < .25):
             return True
         return False 
-
+# board class 
 class PictionaryBoard:
     def __init__(self, width, height, name):
         self.win = GraphWin(name, width, height)
@@ -345,7 +344,7 @@ def getAndCheckGuess(correctWord, interface):
     else:
         return False
 
-
+# player class 
 class Player: 
     def __init__ (self, name, role):
         self.name = name
