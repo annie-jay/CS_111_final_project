@@ -474,7 +474,7 @@ def main():
     if player1.returnGuessState():
         interface.instructions.setText(f"That is correct,\n you win round 1! \n You will now\nswitch roles.\n It is {name1}'s \nturn to draw. \n Click anywhere to \n start the next round")
     else: 
-        interface.instructions.setText(f"You lose round 1! \n The word was {correctWord}. \n You will now switch roles.\n It is {name1}'s turn to draw.\n Click anywhere to start the next round")
+        interface.instructions.setText(f"You lose round 1! \n The word was \n{correctWord}. \n You will now \nswitch roles.\n It is {name1}'s turn to draw.\n Click anywhere to \nstart the next round")
 
     interface.win.getMouse()
     interface.win.close()
